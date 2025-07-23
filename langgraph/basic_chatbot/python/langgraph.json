@@ -1,0 +1,8 @@
+{
+    "graphs": {
+        "basic_chatbot": "src/graph.py:graph"
+    },
+    "dependencies": ["."],
+    "python": "3.13",
+    "env": "./.env"
+}

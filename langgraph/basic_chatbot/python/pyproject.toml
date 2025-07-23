@@ -1,0 +1,12 @@
+[project]
+name = "python"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langchain[google-genai]>=0.3.26",
+    "langchain-openai>=0.3.28",
+    "langgraph>=0.5.4",
+    "langgraph-cli[inmem]>=0.3.5",
+]
