@@ -1,6 +1,6 @@
 {
     "graphs": {
-        "basic_chatbot": "src/graph.py:graph"
+        "basic_chatbot": "langgraph/basic_chatbot/graph/graph.py:graph"
     },
     "dependencies": ["."],
     "python": "3.13",
