@@ -9,4 +9,6 @@ dependencies = [
     "langchain-openai>=0.3.28",
     "langgraph>=0.5.4",
     "langgraph-cli[inmem]>=0.3.5",
+    "ipykernel>=6.30.0",
+    "rich>=14.0.0",
 ]
