@@ -1,53 +1,53 @@
-from typing import Annotated
-from langgraph.graph import StateGraph, START, END
 from langchain.chat_models import init_chat_model
-from langgraph.graph.message import add_messages
-from typing import TypedDict
-from pydantic import BaseModel, Field
+from typing import TypedDict, Annotated
 from langchain_core.messages import AnyMessage
+from langgraph.graph.message import add_messages
+from langgraph.graph import StateGraph, START, END
 
-open_ai_llm = init_chat_model("openai:gpt-4o-mini")
+llm =  init_chat_model("openai:gpt-4o-mini")
 
-google_genai_llm = init_chat_model("google_genai:gemini-2.0-flash")
+llm = llm.bind_tools([])
 
-
-class State(TypedDict):
+#Define the state
+class AgentState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
-    user_intent: str
     
-class UserIntent(BaseModel):
-    intent: str = Field(description="Classify the user query into one of the following categories: weather, news")
+
+#Define the nodes
+def chatbot(state: AgentState)-> AgentState:
     
-def user_intent(state: State)-> State:
-    #Get the current messages
+    #get messages from state
     messages = state["messages"]
     
-    user_query = messages[-1]
+    #get last message
+    last_message = messages[-1]
     
-    PROMPT = """
-    You are a helpful assistant that can classify user queries into one of the following categories: weather, news.
-    {user_query}
-    """
+    #Define a prompt
+    PROMPT= """ you are helpful assistant please response to this user query {user_query} """
     
-    system_instruction = PROMPT.format(user_query=user_query)
-    
-    
+    system_instruction = PROMPT.format(user_query=last_message.content)
     
     messages = [
         {"role": "system", "content": system_instruction}
     ]
     
-    response = open_ai_llm.with_structured_output(UserIntent).invoke(messages)
+    response = llm.invoke(messages)
     
-    return {"user_intent": response.intent}
+    return {"messages": [response]}
+    
+    
 
 
+#Compile the graph
 
-graph_builder = StateGraph(State)
-graph_builder.add_node("user_intent", user_intent)
-graph_builder.add_edge(START, "user_intent")
-graph_builder.add_edge("user_intent", END)
+graph_builder = StateGraph(AgentState)
 
+#add nodes
+graph_builder.add_node("chatbot", chatbot)
+
+#add edges
+graph_builder.add_edge(START, "chatbot")
+graph_builder.add_edge("chatbot", END)
+
+#compile the graph
 graph = graph_builder.compile()
-
-
