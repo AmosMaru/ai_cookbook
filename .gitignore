@@ -1,14 +1,2 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
-
-# Virtual environments
-.venv
-
-.langgraph_api
-
-.env
+02. Building-Apps-With-AI-Models/.env
+02. Building-Apps-With-AI-Models/dog.wav
