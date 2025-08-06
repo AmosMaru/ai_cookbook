@@ -1,0 +1,13 @@
+[project]
+name = "03-workflow-and-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=6.30.1",
+    "langchain>=0.3.27",
+    "langchain-openai>=0.3.28",
+    "langgraph>=0.6.3",
+    "langgraph-cli[inmem]>=0.3.6",
+]

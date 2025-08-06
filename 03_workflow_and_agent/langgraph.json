@@ -1,0 +1,12 @@
+{
+    "graphs": {
+        "prompt_chaining": "graph/prompt_chaining.py:graph",
+        "parallelization": "graph/parallelization.py:graph",
+        "orchestrator": "graph/orchestrator.py:graph",
+        "evaluator_optimizer": "graph/evaluator_optimizer.py:graph",
+        "agent": "graph/agent.py:graph"
+    },
+    "dependencies": ["."],
+    "python": "3.13",
+    "env": "./.env"
+}

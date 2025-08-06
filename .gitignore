@@ -1,2 +1,13 @@
-02. Building-Apps-With-AI-Models/.env
-02. Building-Apps-With-AI-Models/dog.wav
+# Environment and configuration files
+.env
+.langgraph_api
+.venv/
+*.wav
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
