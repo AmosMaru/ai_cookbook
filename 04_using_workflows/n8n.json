@@ -1,0 +1,236 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "09245f1e-f251-4035-8a77-f7e116dec377",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        384,
+        320
+      ],
+      "webhookId": "f5961754-ee99-49c0-819d-a50ce2daa5a6",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "use this tool to find out the current date and time.",
+        "options": {}
+      },
+      "id": "8cbf2ee5-c93b-4197-a85d-9a07a13256f2",
+      "name": "get_current_date",
+      "type": "n8n-nodes-base.dateTimeTool",
+      "position": [
+        928,
+        608
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a financial research assistant. Your task is to find and summarize the latest news for a given company name or stock ticker.\n\nInstructions:\n\nFirst, use the get_current_date tool to determine the date range for the last 7 days.\nPerform two separate web searches using the web_search tool: one with the company's full name and one with its stock ticker. Use the date range in your search queries to filter for news from the last week only.\n\nAfter reviewing the search results, provide a summary of each news article. The summary should cover the key events, announcements, and market sentiment discussed in the articles.\n"
+        }
+      },
+      "id": "7f5bb7af-6978-45ee-afd0-295730e46f4d",
+      "name": "Research Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        640,
+        320
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User asked about: {{ $('When chat message received').item.json.chatInput }}\n\nLatest news:\n {{ $json.output }}\n",
+        "options": {
+          "systemMessage": "You are a Financial Sentiment Analyst. You will be provided with a news summary. Your task is to analyze this summary and categorize its sentiment from an investor's perspective.\n\nInstructions:\n1. Read all the news.\n2. Determine the overall sentiment (Positive, Negative, or Neutral) based on the potential impact on the company's financial performance, stock price, or market reputation.\n3. Write a justification that references specific points from the news summaries.\n\nOutput Format:\nSentiment: {sentiment_category}\nJustification: {Your detailed justification}"
+        }
+      },
+      "id": "4c085fce-4cf2-4b10-b929-5f715f6743db",
+      "name": "Sentiment Analysis Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1040,
+        320
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## **Set up steps**\n\n1.  **Select the Language Model (LLM):** This workflow is pre-configured with Google Gemini. You can select a different model for the agents as needed.\n2.  **Configure LLM Credentials:** Ensure that valid credentials for your chosen LLM are correctly set up within your n8n instance.\n3.  **Set Up the SearXNG Connection:** Configure the node to connect to your self-hosted SearXNG instance. This enables the agent's web search capabilities.\n4.  **Define the Research Agent's Task:** Customize the system prompt for the \"Research Agent\" to define its role, instructions, and how it should conduct its research.\n5.  **Define the Sentiment Analysis Agent's Task:** Adjust the system prompt for the \"Sentiment Analysis Agent\" to specify how it should analyze the information provided by the Research Agent.\n6.  **Test the Workflow:** Use the built-in chat interface in the n8n canvas to send a message and verify that the agents are functioning correctly.",
+        "height": 520,
+        "width": 380
+      },
+      "id": "40e03044-9f1b-4ce3-a853-493417fef63f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        192
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        464,
+        576
+      ],
+      "id": "63d7b955-4fed-42e2-b6ac-202ba696c415",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4XUkKusOw91scckV",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get the latest news using Serper endpoint",
+        "method": "POST",
+        "url": "https://google.serper.dev/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "0803dee6787d82ab6c85f21c7c34f9817963520c"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        752,
+        608
+      ],
+      "id": "f8eae1bd-2172-4eb4-93d3-e2684977aa50",
+      "name": "Get News"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        624,
+        576
+      ],
+      "id": "73e11ca9-1bc1-41d5-8a06-364749662850",
+      "name": "Simple Memory"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_current_date": {
+      "ai_tool": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis Agent": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Sentiment Analysis Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get News": {
+      "ai_tool": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c152acf152efb0777d4c1c23075c8a4954ca69407a2d4b7e70132d5bdc577827"
+  }
+}
