@@ -61,7 +61,7 @@ tools = [get_product_price, get_weather_info, multiply, divide, add]
 
 tools_by_name = {tool.name: tool for tool in tools}
 
-llm_with_tools = llm.bind_tools(tools)
+llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
 
 
 def llm_call(state: AgentState):

@@ -4,7 +4,9 @@
         "parallelization": "graph/parallelization.py:graph",
         "orchestrator": "graph/orchestrator.py:graph",
         "evaluator_optimizer": "graph/evaluator_optimizer.py:graph",
-        "agent": "graph/agent.py:graph"
+        "agent": "graph/agent.py:graph",
+        "example": "graph/example.py:graph",
+        "tools": "graph/tools.py:graph"
     },
     "dependencies": ["."],
     "python": "3.13",
